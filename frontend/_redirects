@@ -1,0 +1,3 @@
+# AI Station — Netlify Redirects
+/kiosk    /kiosk.html   200
+/admin    /admin.html   200
