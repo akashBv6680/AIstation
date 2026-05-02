@@ -14,7 +14,7 @@ const adminRoutes = require('./src/routes/admin.routes');
 const { errorHandler } = require('./src/middleware/error.middleware');
 
 const app = express();
-
+app.set('trust proxy', 1);
 // ── Security ─────────────────────────────────────────────────────────────────
 app.use(helmet());
 
