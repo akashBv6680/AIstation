@@ -2,38 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Station — The World's First Physical AI Arcade | ₹15 / 10 min</title>
-  <meta name="description" content="Pay-per-use access to ChatGPT Plus, Claude Pro, Gemini Ultra, Midjourney, Sora and 100+ premium AI tools. No subscriptions. Walk in. Explore. Create. Madurai, Tamil Nadu." />
-  <meta property="og:title" content="AI Station — The World's First Physical AI Arcade" />
-  <meta property="og:description" content="100+ premium AI tools. ₹15 per 10 minutes. No subscriptions. Madurai, Tamil Nadu." />
-  <meta property="og:type" content="website" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>AI Station — The World’s First Physical AI Arcade</title>
+  <meta
+    name="description"
+    content="Use 100+ premium AI tools in one place. ChatGPT, Claude, Gemini, Midjourney, Sora and more. Pay only for what you use."
+  />
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234F46E5'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='18' font-weight='800' text-anchor='middle' fill='white'%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <header class="nav" id="nav">
-    <div class="nav__inner">
-      <a href="#top" class="brand" aria-label="AI Station home">
-        <svg class="brand__mark" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-          <defs>
-            <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#4F46E5"></stop>
-              <stop offset="50%" stop-color="#EC4899"></stop>
-              <stop offset="100%" stop-color="#F59E0B"></stop>
-            </linearGradient>
-          </defs>
-          <rect x="2" y="2" width="32" height="32" rx="9" fill="url(#brandGrad)"></rect>
-          <path d="M11 24 L18 10 L25 24 M14 19 H22" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-        <span class="brand__text">AI Station</span>
-      </a>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
 
-      <nav class="nav__links" aria-label="Primary">
+  <script>
+    window.AI_STATION_API_URL = "https://aistation-production.up.railway.app/api";
+  </script>
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#top" class="brand">AI Station</a>
+
+      <nav class="nav-links">
         <a href="#platforms">Platforms</a>
         <a href="#how">How it works</a>
         <a href="#pricing">Pricing</a>
@@ -41,382 +39,266 @@
         <a href="#faq">FAQ</a>
       </nav>
 
-      <div class="nav__cta">
-        <button class="btn btn--ghost" data-theme-toggle aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
-        <a href="#pricing" class="btn btn--primary">Buy Credits</a>
+      <div class="nav-actions">
+        <a href="./kiosk.html" class="btn btn-primary">Buy Credits</a>
+        <a href="./admin.html" class="btn btn-secondary">Admin</a>
       </div>
-
-      <button class="nav__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-
-    <div class="nav__mobile" id="mobileMenu" hidden>
-      <a href="#platforms">Platforms</a>
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#locations">Locations</a>
-      <a href="#faq">FAQ</a>
-      <a href="#pricing" class="btn btn--primary btn--block">Buy Credits</a>
     </div>
   </header>
 
-  <main id="top">
+  <main>
     <section class="hero">
-      <div class="hero__bg" aria-hidden="true">
-        <span class="blob blob--1"></span>
-        <span class="blob blob--2"></span>
-        <span class="blob blob--3"></span>
-      </div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">World’s first physical AI arcade</p>
+          <h1>
+            Every AI.<br />
+            One Arcade.<br />
+            No subscriptions.
+          </h1>
+          <p class="hero-text">
+            Walk in and use ChatGPT Plus, Claude Pro, Gemini Ultra, Midjourney,
+            Sora and 100+ premium AI tools side by side. Pay only for what you use.
+          </p>
 
-      <div class="hero__floating" aria-hidden="true">
-        <span class="chip" style="--c:#10A37F">ChatGPT</span>
-        <span class="chip" style="--c:#D97757">Claude</span>
-        <span class="chip" style="--c:#4285F4">Gemini</span>
-        <span class="chip" style="--c:#000">Midjourney</span>
-        <span class="chip" style="--c:#FF6B35">Sora</span>
-        <span class="chip" style="--c:#7C3AED">Runway</span>
-        <span class="chip" style="--c:#22C55E">Cursor</span>
-        <span class="chip" style="--c:#EC4899">ElevenLabs</span>
-        <span class="chip" style="--c:#0EA5E9">Perplexity</span>
-        <span class="chip" style="--c:#F59E0B">Suno</span>
-      </div>
-
-      <div class="container hero__inner">
-        <div class="badge badge--gradient">
-          <span class="dot"></span> World's first physical AI arcade
-        </div>
-
-        <h1 class="hero__title">
-          Every <span class="word word--blue">AI</span>.<br />
-          One <span class="word word--pink">Arcade</span>.<br />
-          <span class="word word--purple">No subscriptions.</span>
-        </h1>
-
-        <p class="hero__sub">
-          Walk in and use ChatGPT Plus, Claude Pro, Gemini Ultra, Midjourney, Sora,
-          and <strong>100+ premium AI tools</strong> — side by side. Just
-          <strong>₹15 for 10 minutes</strong>. Pay only for what you use.
-        </p>
-
-        <div class="hero__ctas">
-          <a href="#pricing" class="btn btn--primary btn--lg">Buy Credits →</a>
-          <a href="#platforms" class="btn btn--ghost btn--lg">Explore Platforms</a>
-        </div>
-
-        <div class="hero__trust">
-          <div><strong>100+</strong><span>AI Tools</span></div>
-          <div><strong>8</strong><span>Categories</span></div>
-          <div><strong>₹15</strong><span>per 10 min</span></div>
-          <div><strong>0</strong><span>Subscriptions</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="platforms">
-      <div class="container">
-        <header class="section__head">
-          <span class="eyebrow eyebrow--pink">Platform Universe</span>
-          <h2 class="section__title">100+ premium AI tools, organized for you</h2>
-          <p class="section__lede">Eight categories. Every major model. Switch between them in seconds — no signup, no card on file, no friction.</p>
-        </header>
-
-        <div class="cat-grid">
-          <article class="cat-card" style="--cc:#3B82F6">
-            <div class="cat-card__icon" aria-hidden="true">💬</div>
-            <h3>Chat &amp; Reasoning</h3>
-            <p class="cat-card__desc">Conversation, research, problem-solving with the smartest models on earth.</p>
-            <ul class="cat-card__list">
-              <li>ChatGPT Plus</li><li>Claude Pro</li><li>Gemini Ultra</li><li>Grok</li><li>DeepSeek</li><li>Mistral Le Chat</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#EC4899">
-            <div class="cat-card__icon" aria-hidden="true">🎨</div>
-            <h3>Image Generation</h3>
-            <p class="cat-card__desc">Photoreal, illustration, concept art and brand visuals.</p>
-            <ul class="cat-card__list">
-              <li>Midjourney v7</li><li>DALL·E 3</li><li>Leonardo AI</li><li>Ideogram</li><li>Flux Pro</li><li>Adobe Firefly</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#8B5CF6">
-            <div class="cat-card__icon" aria-hidden="true">🎬</div>
-            <h3>Video Generation</h3>
-            <p class="cat-card__desc">Cinematic clips, ads and animation from a single prompt.</p>
-            <ul class="cat-card__list">
-              <li>Sora 2</li><li>Runway Gen-4</li><li>Pika</li><li>Kling AI</li><li>Luma Dream Machine</li><li>Hailuo</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#22C55E">
-            <div class="cat-card__icon" aria-hidden="true">⚡</div>
-            <h3>Code &amp; Dev</h3>
-            <p class="cat-card__desc">Build, debug, ship — with AI pair programmers.</p>
-            <ul class="cat-card__list">
-              <li>Cursor Pro</li><li>GitHub Copilot</li><li>Replit Agent</li><li>Windsurf</li><li>Bolt.new</li><li>v0 by Vercel</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#F59E0B">
-            <div class="cat-card__icon" aria-hidden="true">🎙️</div>
-            <h3>Audio &amp; Music</h3>
-            <p class="cat-card__desc">Voiceovers, songs, dubs and sound design in any language.</p>
-            <ul class="cat-card__list">
-              <li>ElevenLabs Pro</li><li>Suno v4</li><li>Udio</li><li>Murf AI</li><li>PlayHT</li><li>Resemble AI</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#14B8A6">
-            <div class="cat-card__icon" aria-hidden="true">📊</div>
-            <h3>Productivity</h3>
-            <p class="cat-card__desc">Notes, meetings, decks and docs — supercharged.</p>
-            <ul class="cat-card__list">
-              <li>Notion AI</li><li>Otter.ai</li><li>Gamma</li><li>Tome</li><li>Beautiful.ai</li><li>Fireflies</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#6366F1">
-            <div class="cat-card__icon" aria-hidden="true">🔬</div>
-            <h3>Research &amp; Knowledge</h3>
-            <p class="cat-card__desc">Search the web, papers and citations — at the speed of thought.</p>
-            <ul class="cat-card__list">
-              <li>Perplexity Pro</li><li>Consensus</li><li>Elicit</li><li>SciSpace</li><li>You.com Pro</li><li>NotebookLM</li>
-            </ul>
-          </article>
-
-          <article class="cat-card" style="--cc:#F97316">
-            <div class="cat-card__icon" aria-hidden="true">🧊</div>
-            <h3>3D &amp; Design</h3>
-            <p class="cat-card__desc">From sketch to 3D scene to finished design system.</p>
-            <ul class="cat-card__list">
-              <li>Luma AI</li><li>Spline AI</li><li>Meshy</li><li>Figma AI</li><li>Recraft</li><li>Galileo AI</li>
-            </ul>
-          </article>
-        </div>
-
-        <p class="cat-grid__more">…and many more added every week.</p>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="how">
-      <div class="container">
-        <header class="section__head">
-          <span class="eyebrow eyebrow--blue">How it works</span>
-          <h2 class="section__title">Three steps. Zero hassle.</h2>
-          <p class="section__lede">No subscriptions, no setup, no API keys. You just walk in and start creating.</p>
-        </header>
-
-        <ol class="steps">
-          <li class="step" style="--cc:#3B82F6">
-            <div class="step__num">1</div>
-            <h3>Walk into AI Station</h3>
-            <p>Visit our arcade in Madurai. Grab any seat. Every workstation is pre-configured with 100+ premium AI accounts.</p>
-          </li>
-          <li class="step" style="--cc:#EC4899">
-            <div class="step__num">2</div>
-            <h3>Buy credits in 30 seconds</h3>
-            <p>Tap, scan UPI, done. Credits load to your session card instantly. ₹15 = 10 minutes of any tool.</p>
-          </li>
-          <li class="step" style="--cc:#8B5CF6">
-            <div class="step__num">3</div>
-            <h3>Explore. Compare. Create.</h3>
-            <p>Switch between ChatGPT, Claude, Midjourney, Sora and 100+ tools freely. Take your work home on a USB or cloud drive.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section" id="pricing">
-      <div class="container">
-        <header class="section__head">
-          <span class="eyebrow eyebrow--green">Pay only for what you use</span>
-          <h2 class="section__title">Simple, transparent pricing</h2>
-          <p class="section__lede">Credits never expire. No hidden fees. No subscriptions. Cancel any time — there's nothing to cancel.</p>
-        </header>
-
-        <div class="price-grid">
-          <article class="price-card" style="--cc:#3B82F6">
-            <header class="price-card__head">
-              <h3>Starter</h3>
-              <p>Perfect for first-time explorers</p>
-            </header>
-            <div class="price-card__price">
-              <span class="price-card__currency">₹</span>
-              <span class="price-card__amount">150</span>
-              <span class="price-card__per">one-time</span>
-            </div>
-            <p class="price-card__credits"><strong>100 minutes</strong> of any AI tool</p>
-            <ul class="price-card__features">
-              <li>Access to all 100+ tools</li>
-              <li>Free workstation seat</li>
-              <li>Credits never expire</li>
-              <li>Take your work home</li>
-            </ul>
-            <a href="#contact" class="btn btn--outline btn--block">Get Started</a>
-          </article>
-
-          <article class="price-card price-card--popular" style="--cc:#EC4899">
-            <span class="price-card__badge">Most Popular</span>
-            <header class="price-card__head">
-              <h3>Explorer</h3>
-              <p>For students &amp; serious learners</p>
-            </header>
-            <div class="price-card__price">
-              <span class="price-card__currency">₹</span>
-              <span class="price-card__amount">500</span>
-              <span class="price-card__per">one-time</span>
-            </div>
-            <p class="price-card__credits"><strong>~6 hours</strong> · effective ₹14/10min</p>
-            <ul class="price-card__features">
-              <li>Everything in Starter</li>
-              <li>Priority workstation booking</li>
-              <li>Free intro workshop</li>
-              <li>Save prompts &amp; outputs to cloud</li>
-              <li>Student discount (with ID): extra 20%</li>
-            </ul>
-            <a href="#contact" class="btn btn--primary btn--block">Buy Explorer</a>
-          </article>
-
-          <article class="price-card" style="--cc:#8B5CF6">
-            <header class="price-card__head">
-              <h3>Pro Pass</h3>
-              <p>For creators &amp; professionals</p>
-            </header>
-            <div class="price-card__price">
-              <span class="price-card__currency">₹</span>
-              <span class="price-card__amount">1,500</span>
-              <span class="price-card__per">one-time</span>
-            </div>
-            <p class="price-card__credits"><strong>~20 hours</strong> · effective ₹12/10min</p>
-            <ul class="price-card__features">
-              <li>Everything in Explorer</li>
-              <li>Reserved private booth</li>
-              <li>1-on-1 expert session (30 min)</li>
-              <li>Early access to new tools</li>
-              <li>Bulk export (videos &amp; images)</li>
-            </ul>
-            <a href="#contact" class="btn btn--outline btn--block">Buy Pro Pass</a>
-          </article>
-        </div>
-
-        <p class="price-note">
-          Walk-in rate: <strong>₹15 per 10 minutes</strong>. Pay via UPI, card or cash. GST extra where applicable.
-        </p>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="contact">
-      <div class="container">
-        <div class="contact">
-          <div class="contact__copy">
-            <span class="eyebrow eyebrow--pink">Contact us</span>
-            <h2 class="section__title">Partnerships, press, or just hello</h2>
-            <p class="section__lede">Want to bring AI Station to your city? Run a campus workshop? Sponsor a tool? Drop us a line — we read every message.</p>
-
-            <ul class="contact__list">
-              <li><span class="contact__icon" style="--cc:#3B82F6">✉️</span><div><strong>Email</strong><a href="mailto:akashvishnu6680@gmail.com">akashvishnu6680@gmail.com</a></div></li>
-              <li><span class="contact__icon" style="--cc:#22C55E">📞</span><div><strong>Phone</strong><a href="tel:+919789216680">+91 97892 16680</a></div></li>
-              <li><span class="contact__icon" style="--cc:#8B5CF6">💼</span><div><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/akash-bv-b14a00279/" target="_blank" rel="noopener">akash-bv</a></div></li>
-              <li><span class="contact__icon" style="--cc:#EC4899">📍</span><div><strong>Flagship</strong><span>Madurai, Tamil Nadu, India</span></div></li>
-            </ul>
+          <div class="hero-actions">
+            <a href="./kiosk.html" class="btn btn-primary">Buy Credits</a>
+            <a href="#platforms" class="btn btn-secondary">Explore Platforms</a>
           </div>
 
-          <form class="contact__form" onsubmit="return handleSubmit(event)">
-            <h3>Send us a message</h3>
-
-            <div class="field">
-              <label for="cname">Name</label>
-              <input id="cname" name="name" required placeholder="Your name" />
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong>100+</strong>
+              <span>AI tools</span>
             </div>
-
-            <div class="field">
-              <label for="cemail">Email</label>
-              <input id="cemail" name="email" type="email" required placeholder="you@email.com" />
+            <div class="stat-card">
+              <strong>8</strong>
+              <span>Categories</span>
             </div>
-
-            <div class="field">
-              <label for="ctopic">I'm interested in</label>
-              <select id="ctopic" name="topic">
-                <option>Visiting the Madurai arcade</option>
-                <option>Bringing AI Station to my city</option>
-                <option>Campus / college partnership</option>
-                <option>Corporate team passes</option>
-                <option>Press &amp; media</option>
-                <option>Something else</option>
-              </select>
+            <div class="stat-card">
+              <strong>₹15</strong>
+              <span>Per 10 min</span>
             </div>
-
-            <div class="field">
-              <label for="cmsg">Message</label>
-              <textarea id="cmsg" name="message" rows="4" placeholder="Tell us a bit more..." required></textarea>
+            <div class="stat-card">
+              <strong>0</strong>
+              <span>Subscriptions</span>
             </div>
+          </div>
+        </div>
 
-            <button type="submit" class="btn btn--primary btn--block">Send message</button>
-            <p class="form-note" id="formNote" hidden></p>
-          </form>
+        <div class="hero-panel">
+          <div class="hero-chip-list">
+            <span>ChatGPT</span>
+            <span>Claude</span>
+            <span>Gemini</span>
+            <span>Midjourney</span>
+            <span>Sora</span>
+            <span>Runway</span>
+            <span>Cursor</span>
+            <span>Perplexity</span>
+            <span>ElevenLabs</span>
+            <span>Suno</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="platforms" class="section">
+      <div class="container">
+        <p class="section-tag">Platform Universe</p>
+        <h2>100+ premium AI tools, organized for you</h2>
+        <p class="section-sub">
+          Eight categories. Every major model. Switch between them in seconds.
+        </p>
+
+        <div class="category-grid">
+          <article class="category-card">
+            <h3>Chat & Reasoning</h3>
+            <p>ChatGPT Plus, Claude Pro, Gemini Ultra, Grok, DeepSeek, Mistral.</p>
+          </article>
+
+          <article class="category-card">
+            <h3>Image Generation</h3>
+            <p>Midjourney, DALL·E 3, Leonardo AI, Ideogram, Flux Pro, Firefly.</p>
+          </article>
+
+          <article class="category-card">
+            <h3>Video Generation</h3>
+            <p>Sora, Runway, Pika, Kling AI, Luma Dream Machine, Hailuo.</p>
+          </article>
+
+          <article class="category-card">
+            <h3>Code & Dev</h3>
+            <p>Cursor Pro, GitHub Copilot, Replit Agent, Windsurf, Bolt, v0.</p>
+          </article>
+
+          <article class="category-card">
+            <h3>Audio & Music</h3>
+            <p>ElevenLabs, Suno, Udio, Murf AI, PlayHT, Resemble AI.</p>
+          </article>
+
+          <article class="category-card">
+            <h3>Research & Productivity</h3>
+            <p>Perplexity Pro, Consensus, Elicit, SciSpace, Notion AI, Gamma.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section alt-section">
+      <div class="container">
+        <p class="section-tag">How it works</p>
+        <h2>Three steps. Zero hassle.</h2>
+
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-no">1</span>
+            <h3>Walk into AI Station</h3>
+            <p>Visit the arcade in Madurai and choose any available workstation.</p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-no">2</span>
+            <h3>Buy credits in seconds</h3>
+            <p>Pay via UPI, card, or cash. Credits are added to your session instantly.</p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-no">3</span>
+            <h3>Explore and create</h3>
+            <p>Switch between tools freely and take your work home through cloud or USB.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <div class="container">
+        <p class="section-tag">Pricing</p>
+        <h2>Simple, transparent pricing</h2>
+
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Starter</h3>
+            <p class="price">₹150</p>
+            <p>100 minutes of any AI tool</p>
+            <a href="./kiosk.html" class="btn btn-secondary">Get Started</a>
+          </article>
+
+          <article class="price-card featured">
+            <h3>Explorer</h3>
+            <p class="price">₹500</p>
+            <p>~6 hours with extra learner benefits</p>
+            <a href="./kiosk.html" class="btn btn-primary">Buy Explorer</a>
+          </article>
+
+          <article class="price-card">
+            <h3>Pro Pass</h3>
+            <p class="price">₹1,500</p>
+            <p>~20 hours for creators and professionals</p>
+            <a href="./kiosk.html" class="btn btn-secondary">Buy Pro Pass</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="locations" class="section alt-section">
+      <div class="container">
+        <p class="section-tag">Location</p>
+        <h2>Madurai flagship</h2>
+        <p class="section-sub">
+          AI Station flagship is based in Madurai, Tamil Nadu, India.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container contact-grid">
+        <div>
+          <p class="section-tag">Contact</p>
+          <h2>Partnerships, press, or just hello</h2>
+          <ul class="contact-list">
+            <li>Email: <a href="mailto:akashvishnu6680@gmail.com">akashvishnu6680@gmail.com</a></li>
+            <li>Phone: <a href="tel:+919789216680">+91 97892 16680</a></li>
+            <li>LinkedIn: <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/akash-bv-b14a00279/">akash-bv</a></li>
+          </ul>
+        </div>
+
+        <form id="contactForm" class="contact-form">
+          <div class="field">
+            <label for="cname">Name</label>
+            <input id="cname" name="name" type="text" required />
+          </div>
+
+          <div class="field">
+            <label for="cemail">Email</label>
+            <input id="cemail" name="email" type="email" required />
+          </div>
+
+          <div class="field">
+            <label for="cphone">Phone</label>
+            <input id="cphone" name="phone" type="tel" />
+          </div>
+
+          <div class="field">
+            <label for="ctopic">I'm interested in</label>
+            <select id="ctopic" name="interest">
+              <option>Visiting the Madurai arcade</option>
+              <option>Bringing AI Station to my city</option>
+              <option>Campus / college partnership</option>
+              <option>Corporate team passes</option>
+              <option>Press & media</option>
+              <option>Something else</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="cmessage">Message</label>
+            <textarea id="cmessage" name="message" rows="4" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Send message</button>
+          <p id="contactStatus" class="form-status"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="faq" class="section alt-section">
+      <div class="container">
+        <p class="section-tag">FAQ</p>
+        <h2>Common questions</h2>
+
+        <div class="faq-list">
+          <details>
+            <summary>Do credits expire?</summary>
+            <p>No. Your earlier page copy says credits never expire.</p>
+          </details>
+
+          <details>
+            <summary>Can I use different tools in one session?</summary>
+            <p>Yes. The current landing page says users can switch between tools freely.</p>
+          </details>
+
+          <details>
+            <summary>How much does it cost?</summary>
+            <p>The current public pricing says ₹15 per 10 minutes, with one-time plans also listed.</p>
+          </details>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <a href="#top" class="brand">
-          <svg class="brand__mark" width="32" height="32" viewBox="0 0 36 36" aria-hidden="true">
-            <defs>
-              <linearGradient id="brandGradFooter" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#4F46E5"></stop>
-                <stop offset="50%" stop-color="#EC4899"></stop>
-                <stop offset="100%" stop-color="#F59E0B"></stop>
-              </linearGradient>
-            </defs>
-            <rect x="2" y="2" width="32" height="32" rx="9" fill="url(#brandGradFooter)"></rect>
-            <path d="M11 24 L18 10 L25 24 M14 19 H22" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <span class="brand__text">AI Station</span>
-        </a>
-        <p>The world's first physical AI arcade. ₹15 / 10 min. No subscriptions.</p>
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>
+        <strong>AI Station</strong>
+        <p>The world’s first physical AI arcade.</p>
       </div>
-
-      <div class="footer__cols">
-        <div>
-          <h4>Explore</h4>
-          <a href="#platforms">Platforms</a>
-          <a href="#how">How it works</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#why">Why AI Station</a>
-        </div>
-
-        <div>
-          <h4>Visit</h4>
-          <a href="#locations">Locations</a>
-          <a href="#faq">FAQ</a>
-          <a href="#contact">Contact</a>
-        </div>
-
-        <div>
-          <h4>Connect</h4>
-          <a href="mailto:akashvishnu6680@gmail.com">Email</a>
-          <a href="tel:+919789216680">Phone</a>
-          <a href="https://www.linkedin.com/in/akash-bv-b14a00279/" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="container footer__bottom">
       <p>© 2026 AI Station. Made with care in Madurai, Tamil Nadu.</p>
     </div>
   </footer>
 
-  <script>
-    window.AI_STATION_API_URL = "https://aistation-production.up.railway.app/api";
-  </script>
-  <script src="script.js"></script>
+  <script src="./api.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
