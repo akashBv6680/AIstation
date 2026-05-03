@@ -1,874 +1,213 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
   <title>AI Station — Kiosk</title>
+  <meta
+    name="description"
+    content="Buy AI Station credits, start a session, and check your balance."
+  />
+
+  <link rel="stylesheet" href="./styles.css" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #0f0f13;
-      --surface: #1a1a24;
-      --surface2: #22222f;
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f1f1f5;
-      --muted: #8888a0;
-      --accent: #4F46E5;
-      --pink: #EC4899;
-      --green: #22C55E;
-      --amber: #F59E0B;
-      --red: #EF4444;
-      --radius: 16px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Inter", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    h1, h2, h3 {
-      font-family: "Space Grotesk", sans-serif;
-    }
-
-    .screen {
-      width: 100%;
-      max-width: 480px;
-    }
-
-    [data-screen] {
-      display: none;
-    }
-
-    [data-screen].active {
-      display: block;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 28px;
-    }
-
-    .logo span {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .eyebrow {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .screen-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-
-    .screen-sub {
-      color: var(--muted);
-      text-align: center;
-      font-size: 0.9rem;
-      margin-bottom: 28px;
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--muted);
-    }
-
-    input[type="tel"],
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.15s;
-      font-family: "Inter", sans-serif;
-    }
-
-    input:focus {
-      border-color: var(--accent);
-    }
-
-    .plans {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .plan {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      background: var(--surface2);
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: border-color 0.15s, transform 0.15s;
-    }
-
-    .plan:hover {
-      transform: translateY(-1px);
-    }
-
-    .plan.selected {
-      border-color: var(--accent);
-    }
-
-    .plan__dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      flex-shrink: 0;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .plan.selected .plan__dot {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .plan__info {
-      flex: 1;
-    }
-
-    .plan__name {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .plan__desc {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .plan__price {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--accent);
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.15s;
-      font-family: "Space Grotesk", sans-serif;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn--primary {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .btn--green {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .btn--red {
-      background: var(--red);
-      color: #fff;
-    }
-
-    .btn--ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      margin-top: 10px;
-    }
-
-    .timer-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      padding: 8px 0;
-    }
-
-    .timer-ring {
-      position: relative;
-      width: 200px;
-      height: 200px;
-    }
-
-    .timer-ring svg {
-      transform: rotate(-90deg);
-    }
-
-    .timer-ring circle {
-      fill: none;
-      stroke-width: 12;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1s linear;
-    }
-
-    .timer-ring .track {
-      stroke: var(--surface2);
-    }
-
-    .timer-ring .fill {
-      stroke: var(--accent);
-    }
-
-    .timer-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .timer-time {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .timer-label {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .timer-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .stat {
-      background: var(--surface2);
-      border-radius: 10px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .stat__val {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .stat__key {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .timer-tools {
-      width: 100%;
-    }
-
-    .tools-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .tools-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .tool-chip {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-    }
-
-    .timer-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-    }
-
-    .alert {
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      text-align: center;
-      margin-top: 14px;
-    }
-
-    .alert--error {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-
-    .alert--success {
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: #86efac;
-    }
-
-    .alert--info {
-      background: rgba(79, 70, 229, 0.15);
-      border: 1px solid rgba(79, 70, 229, 0.3);
-      color: #a5b4fc;
-    }
-
-    .alert[hidden] {
-      display: none;
-    }
-
-    .ws-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-
-    .ws-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @media (max-width: 540px) {
-      body {
-        padding: 16px;
-      }
-
-      .card {
-        padding: 22px;
-      }
-
-      .timer-ring {
-        width: 180px;
-        height: 180px;
-      }
-
-      .timer-ring svg {
-        width: 180px;
-        height: 180px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="screen">
-    <div data-screen="phone" class="active">
-      <div class="card">
-        <div class="logo">
-          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-            <defs>
-              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#4F46E5"></stop>
-                <stop offset="100%" stop-color="#EC4899"></stop>
-              </linearGradient>
-            </defs>
-            <rect x="2" y="2" width="32" height="32" rx="9" fill="url(#g)"></rect>
-            <path d="M11 24 L18 10 L25 24 M14 19 H22" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <span>AI Station</span>
-        </div>
-
-        <div class="eyebrow">Step 1 of 3</div>
-        <h2 class="screen-title">Enter your mobile</h2>
-        <p class="screen-sub">We'll look up your credit balance.</p>
-
-        <div class="field">
-          <label for="phoneInput">Mobile number</label>
-          <input id="phoneInput" type="tel" placeholder="9876543210" maxlength="10" autocomplete="tel" />
-        </div>
-
-        <button class="btn btn--primary" id="phoneContinue">Continue →</button>
-        <div class="alert" id="phoneAlert" hidden></div>
-      </div>
-    </div>
-
-    <div data-screen="balance">
-      <div class="card">
-        <div class="eyebrow">Step 2 of 3</div>
-        <h2 class="screen-title">Your credits</h2>
-        <p class="screen-sub" id="balSub">Checking balance…</p>
-
-        <div class="plans" id="planList">
-          <div class="plan selected" data-plan="starter" data-amount="150" data-minutes="100">
-            <div class="plan__dot"></div>
-            <div class="plan__info">
-              <div class="plan__name">Starter</div>
-              <div class="plan__desc">100 minutes · any tool</div>
-            </div>
-            <div class="plan__price">₹150</div>
-          </div>
-
-          <div class="plan" data-plan="explorer" data-amount="500" data-minutes="360">
-            <div class="plan__dot"></div>
-            <div class="plan__info">
-              <div class="plan__name">Explorer</div>
-              <div class="plan__desc">~6 hours · save to cloud</div>
-            </div>
-            <div class="plan__price">₹500</div>
-          </div>
-
-          <div class="plan" data-plan="pro" data-amount="1200" data-minutes="1200">
-            <div class="plan__dot"></div>
-            <div class="plan__info">
-              <div class="plan__name">Pro Pass</div>
-              <div class="plan__desc">~20 hours · priority seat</div>
-            </div>
-            <div class="plan__price">₹1,200</div>
-          </div>
-        </div>
-
-        <button class="btn btn--primary" id="payBtn">Pay with UPI / Card</button>
-        <button class="btn btn--ghost" id="skipPayBtn">I already have credits →</button>
-        <div class="alert" id="balAlert" hidden></div>
-      </div>
-    </div>
-
-    <div data-screen="session">
-      <div class="card">
-        <div style="text-align:center">
-          <div class="ws-badge">
-            <span class="ws-dot"></span>
-            <span id="wsLabel">Workstation —</span>
-          </div>
-        </div>
-
-        <div class="timer-wrap">
-          <div class="timer-ring">
-            <svg width="200" height="200" viewBox="0 0 200 200">
-              <circle class="track" cx="100" cy="100" r="88"></circle>
-              <circle class="fill" id="timerArc" cx="100" cy="100" r="88" stroke-dasharray="553" stroke-dashoffset="0"></circle>
-            </svg>
-            <div class="timer-center">
-              <div class="timer-time" id="timerDisplay">00:00</div>
-              <div class="timer-label">remaining</div>
-            </div>
-          </div>
-
-          <div class="timer-stats">
-            <div class="stat">
-              <div class="stat__val" id="creditsLeft">—</div>
-              <div class="stat__key">credits left</div>
-            </div>
-            <div class="stat">
-              <div class="stat__val" id="timeUsed">0 min</div>
-              <div class="stat__key">used today</div>
-            </div>
-          </div>
-
-          <div class="timer-tools">
-            <div class="tools-label">Available tools at this workstation</div>
-            <div class="tools-list" id="toolsList">
-              <span class="tool-chip">ChatGPT Plus</span>
-              <span class="tool-chip">Claude Pro</span>
-              <span class="tool-chip">Gemini Ultra</span>
-              <span class="tool-chip">Midjourney</span>
-              <span class="tool-chip">Sora</span>
-            </div>
-          </div>
-
-          <div class="timer-actions">
-            <button class="btn btn--primary" id="pauseBtn">⏸ Pause Session</button>
-            <button class="btn btn--red" id="endBtn">End Session</button>
-          </div>
-        </div>
-
-        <div class="alert" id="sessionAlert" hidden></div>
-      </div>
-    </div>
-
-    <div data-screen="summary">
-      <div class="card" style="text-align:center">
-        <div style="font-size:3rem;margin-bottom:12px">✅</div>
-        <h2 class="screen-title">Session complete</h2>
-        <p class="screen-sub" id="summaryText">Thanks for using AI Station!</p>
-
-        <div class="timer-stats" style="margin:20px 0">
-          <div class="stat">
-            <div class="stat__val" id="sumTime">—</div>
-            <div class="stat__key">time used</div>
-          </div>
-          <div class="stat">
-            <div class="stat__val" id="sumCredits">—</div>
-            <div class="stat__key">credits deducted</div>
-          </div>
-        </div>
-
-        <button class="btn btn--primary" id="restartBtn">Start New Session</button>
-      </div>
-    </div>
-  </div>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
 
   <script>
     window.AI_STATION_API_URL = "https://aistation-production.up.railway.app/api";
   </script>
+</head>
+<body class="kiosk-body">
+  <header class="site-header">
+    <div class="container nav">
+      <a href="./index.html" class="brand">AI Station</a>
 
-  <script>
-    const API = window.AI_STATION_API_URL || "/api";
+      <nav class="nav-links">
+        <a href="./index.html#pricing">Pricing</a>
+        <a href="./index.html#faq">FAQ</a>
+        <a href="./admin.html">Admin</a>
+      </nav>
 
-    async function api(method, path, body) {
-      const res = await fetch(`${API}${path}`, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: body ? JSON.stringify(body) : undefined
-      });
+      <div class="nav-actions">
+        <a href="./index.html" class="btn btn-secondary">Home</a>
+      </div>
+    </div>
+  </header>
 
-      const data = await res.json().catch(() => ({}));
+  <main class="kiosk-main">
+    <section class="kiosk-hero">
+      <div class="container">
+        <p class="eyebrow">Self-service kiosk</p>
+        <h1>Buy credits and start your AI session</h1>
+        <p class="hero-text">
+          Use your phone number to buy minutes, check balance, and start a workstation session.
+        </p>
+      </div>
+    </section>
 
-      if (!res.ok) {
-        throw new Error(data.message || `Error ${res.status}`);
-      }
+    <section class="section">
+      <div class="container kiosk-grid">
+        <div class="panel kiosk-panel">
+          <div class="panel-head">
+            <h2>1. Identify yourself</h2>
+          </div>
 
-      return data;
-    }
+          <div class="field">
+            <label for="customerPhone">Phone number</label>
+            <input
+              id="customerPhone"
+              type="tel"
+              placeholder="Enter 10-digit phone number"
+              maxlength="10"
+            />
+          </div>
 
-    function showScreen(name) {
-      document.querySelectorAll("[data-screen]").forEach((el) => el.classList.remove("active"));
-      const target = document.querySelector(`[data-screen="${name}"]`);
-      if (target) target.classList.add("active");
-    }
+          <div class="field">
+            <label for="customerName">Name (optional)</label>
+            <input
+              id="customerName"
+              type="text"
+              placeholder="Your name"
+            />
+          </div>
 
-    function showAlert(id, msg, type = "error") {
-      const el = document.getElementById(id);
-      el.className = `alert alert--${type}`;
-      el.textContent = msg;
-      el.hidden = false;
-    }
+          <button id="checkBalanceBtn" class="btn btn-secondary">
+            Check Balance
+          </button>
 
-    function hideAlert(id) {
-      const el = document.getElementById(id);
-      el.hidden = true;
-      el.textContent = "";
-    }
+          <p id="balanceStatus" class="form-status"></p>
 
-    function fmtTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, "0");
-      const s = (seconds % 60).toString().padStart(2, "0");
-      return `${m}:${s}`;
-    }
+          <div class="balance-box">
+            <p class="panel-label">Available credits</p>
+            <h3 id="balanceMinutes">0 mins</h3>
+            <span id="balanceMeta">No account checked yet</span>
+          </div>
+        </div>
 
-    let state = {
-      phone: "",
-      balance: 0,
-      sessionId: null,
-      workstationId: new URLSearchParams(location.search).get("ws") || "WS-01",
-      totalSeconds: 0,
-      elapsed: 0,
-      paused: false,
-      interval: null
-    };
+        <div class="panel kiosk-panel">
+          <div class="panel-head">
+            <h2>2. Choose a plan</h2>
+          </div>
 
-    document.getElementById("phoneContinue").addEventListener("click", async () => {
-      hideAlert("phoneAlert");
-      const phone = document.getElementById("phoneInput").value.trim();
+          <div class="plan-grid">
+            <button class="plan-card active" data-plan="starter" data-minutes="100" data-amount="150">
+              <span class="plan-name">Starter</span>
+              <strong>₹150</strong>
+              <small>100 mins</small>
+            </button>
 
-      if (!/^\d{10}$/.test(phone)) {
-        showAlert("phoneAlert", "Enter a valid 10-digit mobile number.");
-        return;
-      }
+            <button class="plan-card" data-plan="explorer" data-minutes="360" data-amount="500">
+              <span class="plan-name">Explorer</span>
+              <strong>₹500</strong>
+              <small>360 mins</small>
+            </button>
 
-      state.phone = phone;
-      showScreen("balance");
-      await loadBalance();
-    });
+            <button class="plan-card" data-plan="pro" data-minutes="1200" data-amount="1500">
+              <span class="plan-name">Pro Pass</span>
+              <strong>₹1,500</strong>
+              <small>1200 mins</small>
+            </button>
+          </div>
 
-    async function loadBalance() {
-      hideAlert("balAlert");
+          <div class="selected-plan-box">
+            <p class="panel-label">Selected plan</p>
+            <h3 id="selectedPlanName">Starter</h3>
+            <span id="selectedPlanMeta">100 mins • ₹150</span>
+          </div>
 
-      try {
-        const data = await api("GET", `/payments/balance/${state.phone}`);
-        state.balance = data.minutesRemaining || 0;
-        document.getElementById("balSub").textContent =
-          `Balance: ${state.balance} minutes`;
-      } catch {
-        state.balance = 0;
-        document.getElementById("balSub").textContent =
-          "No existing balance found. Top up below.";
-      }
-    }
+          <button id="buyCreditsBtn" class="btn btn-primary">
+            Buy Credits
+          </button>
 
-    document.querySelectorAll(".plan").forEach((el) => {
-      el.addEventListener("click", () => {
-        document.querySelectorAll(".plan").forEach((p) => p.classList.remove("selected"));
-        el.classList.add("selected");
-      });
-    });
+          <p id="paymentStatus" class="form-status"></p>
+        </div>
 
-    document.getElementById("payBtn").addEventListener("click", async () => {
-      hideAlert("balAlert");
-      const selected = document.querySelector(".plan.selected");
-      if (!selected) return;
+        <div class="panel kiosk-panel">
+          <div class="panel-head">
+            <h2>3. Start a session</h2>
+          </div>
 
-      const planId = selected.dataset.plan;
-      const btn = document.getElementById("payBtn");
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Creating order…';
+          <div class="field">
+            <label for="workstationId">Workstation</label>
+            <select id="workstationId">
+              <option value="WS-01">WS-01</option>
+              <option value="WS-02">WS-02</option>
+              <option value="WS-03">WS-03</option>
+              <option value="WS-04">WS-04</option>
+              <option value="WS-05">WS-05</option>
+            </select>
+          </div>
 
-      try {
-        const order = await api("POST", "/payments/create-order", {
-          planId,
-          phone: state.phone
-        });
+          <div class="field">
+            <label for="sessionMinutes">Minutes to use</label>
+            <input
+              id="sessionMinutes"
+              type="number"
+              min="10"
+              step="10"
+              value="30"
+            />
+          </div>
 
-        if (window.Razorpay) {
-          const rzp = new window.Razorpay({
-            key: order.keyId,
-            amount: order.amount,
-            currency: "INR",
-            name: "AI Station",
-            description: `${selected.querySelector(".plan__name").textContent} Credits`,
-            order_id: order.orderId,
-            prefill: { contact: state.phone },
-            theme: { color: "#4F46E5" },
-            handler: async (resp) => {
-              await api("POST", "/payments/verify", {
-                orderId: resp.razorpay_order_id,
-                paymentId: resp.razorpay_payment_id,
-                signature: resp.razorpay_signature,
-                phone: state.phone
-              });
+          <button id="startSessionBtn" class="btn btn-primary">
+            Start Session
+          </button>
 
-              showAlert("balAlert", "Payment successful. Starting session…", "success");
-              setTimeout(() => startSession(), 1200);
-            }
-          });
+          <button id="endSessionBtn" class="btn btn-secondary">
+            End Session
+          </button>
 
-          rzp.open();
-        } else {
-          showAlert("balAlert", "Razorpay not loaded. Starting dev session.", "info");
-          setTimeout(() => startSession(), 1000);
-        }
-      } catch (err) {
-        showAlert("balAlert", err.message || "Payment failed.");
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Pay with UPI / Card";
-      }
-    });
+          <p id="sessionStatus" class="form-status"></p>
 
-    document.getElementById("skipPayBtn").addEventListener("click", () => {
-      hideAlert("balAlert");
+          <div class="session-box">
+            <p class="panel-label">Current session</p>
+            <h3 id="sessionLiveState">No active session</h3>
+            <span id="sessionMeta">Choose a workstation and start</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      if (state.balance <= 0) {
-        showAlert("balAlert", "No credits found. Please top up first.");
-        return;
-      }
+    <section class="section alt-section">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Session history</h2>
+            <button id="loadHistoryBtn" class="btn btn-secondary">Load History</button>
+          </div>
 
-      startSession();
-    });
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Session ID</th>
+                  <th>Workstation</th>
+                  <th>Minutes</th>
+                  <th>Status</th>
+                  <th>Started</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody">
+                <tr>
+                  <td colspan="5">No history loaded</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    async function startSession() {
-      try {
-        const data = await api("POST", "/sessions/start", {
-          phone: state.phone,
-          workstationId: state.workstationId
-        });
-
-        state.sessionId = data.sessionId;
-        state.totalSeconds = (data.minutesRemaining || 60) * 60;
-        state.elapsed = 0;
-        state.paused = false;
-
-        document.getElementById("wsLabel").textContent = `Workstation ${state.workstationId}`;
-        document.getElementById("creditsLeft").textContent = `${data.minutesRemaining || 60} min`;
-        document.getElementById("timeUsed").textContent = "0 min";
-        document.getElementById("pauseBtn").textContent = "⏸ Pause Session";
-
-        showScreen("session");
-        startTimer();
-      } catch (err) {
-        showAlert("balAlert", err.message || "Could not start session.");
-      }
-    }
-
-    function startTimer() {
-      clearInterval(state.interval);
-      updateTimerUI();
-
-      state.interval = setInterval(() => {
-        if (state.paused) return;
-
-        state.elapsed += 1;
-        const remainingSeconds = Math.max(0, state.totalSeconds - state.elapsed);
-        const remainingMin = Math.ceil(remainingSeconds / 60);
-
-        document.getElementById("creditsLeft").textContent = `${remainingMin} min`;
-        document.getElementById("timeUsed").textContent = `${Math.floor(state.elapsed / 60)} min`;
-
-        updateTimerUI();
-
-        if (remainingSeconds <= 0) {
-          endSession();
-        }
-      }, 1000);
-    }
-
-    function updateTimerUI() {
-      const remaining = Math.max(0, state.totalSeconds - state.elapsed);
-      document.getElementById("timerDisplay").textContent = fmtTime(remaining);
-
-      const pct = state.totalSeconds > 0 ? remaining / state.totalSeconds : 0;
-      const circ = 553;
-      document.getElementById("timerArc").style.strokeDashoffset = `${circ * (1 - pct)}`;
-    }
-
-    document.getElementById("pauseBtn").addEventListener("click", async () => {
-      if (!state.sessionId) return;
-
-      state.paused = !state.paused;
-      document.getElementById("pauseBtn").textContent = state.paused
-        ? "▶ Resume Session"
-        : "⏸ Pause Session";
-
-      try {
-        if (state.paused) {
-          await api("POST", `/sessions/${state.sessionId}/pause`);
-        } else {
-          await api("POST", `/sessions/${state.sessionId}/resume`);
-        }
-      } catch {
-      }
-    });
-
-    document.getElementById("endBtn").addEventListener("click", () => {
-      endSession();
-    });
-
-    async function endSession() {
-      clearInterval(state.interval);
-
-      try {
-        const data = await api("POST", `/sessions/${state.sessionId}/end`);
-        const usedMin = data.minutesUsed || Math.ceil(state.elapsed / 60);
-
-        document.getElementById("sumTime").textContent = `${usedMin} min`;
-        document.getElementById("sumCredits").textContent = `${usedMin} min`;
-        document.getElementById("summaryText").textContent =
-          `Thanks for visiting. Mobile ending ${state.phone.slice(-4)}.`;
-      } catch {
-        document.getElementById("sumTime").textContent = `${Math.ceil(state.elapsed / 60)} min`;
-        document.getElementById("sumCredits").textContent = "—";
-        document.getElementById("summaryText").textContent =
-          "Thanks for using AI Station!";
-      }
-
-      showScreen("summary");
-    }
-
-    document.getElementById("restartBtn").addEventListener("click", () => {
-      clearInterval(state.interval);
-
-      state = {
-        ...state,
-        phone: "",
-        balance: 0,
-        sessionId: null,
-        totalSeconds: 0,
-        elapsed: 0,
-        paused: false,
-        interval: null
-      };
-
-      document.getElementById("phoneInput").value = "";
-      hideAlert("phoneAlert");
-      hideAlert("balAlert");
-      hideAlert("sessionAlert");
-      showScreen("phone");
-    });
-  </script>
+  <script src="./api.js"></script>
+  <script src="./kiosk.js"></script>
 </body>
 </html>
