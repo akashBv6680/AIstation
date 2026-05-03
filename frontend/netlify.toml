@@ -1,34 +1,13 @@
 [build]
-  publish = "."
+  publish = "frontend"
 
 [[redirects]]
-  from = "/kiosk"
-  to = "/kiosk.html"
+  from = "/api/*"
+  to = "https://aistation-production.up.railway.app/api/:splat"
   status = 200
+  force = true
 
 [[redirects]]
-  from = "/admin"
-  to = "/admin.html"
+  from = "/*"
+  to = "/index.html"
   status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "no-cache"
-
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
-
-[[headers]]
-  for = "*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
