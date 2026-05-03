@@ -1,212 +1,341 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>AI Station — Admin</title>
+(function () {
+  const API = window.AIStationAPI;
 
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
-    rel="stylesheet"
-  />
+  const loginScreen = document.getElementById("loginScreen");
+  const appLayout = document.getElementById("appLayout");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginAlert = document.getElementById("loginAlert");
 
-  <script>
-    window.AI_STATION_API_URL = "https://aistation-production.up.railway.app/api";
-  </script>
-</head>
-<body class="admin-body">
-  <section id="loginScreen" class="login-screen">
-    <div class="login-card">
-      <h1>Staff Login</h1>
-      <p>AI Station — Admin Panel</p>
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
 
-      <div class="field">
-        <label for="loginEmail">Email</label>
-        <input
-          id="loginEmail"
-          type="email"
-          placeholder="admin@aistation.in"
-          autocomplete="username"
-        />
-      </div>
+  const navItems = Array.from(document.querySelectorAll(".nav-item"));
+  const pages = Array.from(document.querySelectorAll(".page"));
 
-      <div class="field">
-        <label for="loginPassword">Password</label>
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="••••••••"
-          autocomplete="current-password"
-        />
-      </div>
+  const dashDate = document.getElementById("dashDate");
+  const statSessions = document.getElementById("statSessions");
+  const statRevenue = document.getElementById("statRevenue");
+  const statRevenueTx = document.getElementById("statRevenueTx");
+  const statCredits = document.getElementById("statCredits");
+  const statContacts = document.getElementById("statContacts");
 
-      <button id="loginBtn" class="btn btn-primary">Sign in</button>
-      <p id="loginAlert" class="form-status error-text"></p>
-    </div>
-  </section>
+  const txBody = document.getElementById("txBody");
+  const allTxBody = document.getElementById("allTxBody");
+  const sessBody = document.getElementById("sessBody");
+  const contactBody = document.getElementById("contactBody");
+  const wsGrid = document.getElementById("wsGrid");
+  const refreshDash = document.getElementById("refreshDash");
 
-  <div id="appLayout" class="admin-layout hidden">
-    <aside class="admin-sidebar">
-      <div class="sidebar-brand">AI Station</div>
+  let adminToken = "";
+  let currentAdmin = null;
 
-      <nav class="sidebar-nav">
-        <button class="nav-item active" data-page="dashboard">Dashboard</button>
-        <button class="nav-item" data-page="workstations">Workstations</button>
-        <button class="nav-item" data-page="sessions">Sessions</button>
-        <button class="nav-item" data-page="transactions">Transactions</button>
-        <button class="nav-item" data-page="contacts">Contacts</button>
-      </nav>
+  function formatMoney(value) {
+    const amount = Number(value || 0);
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
 
-      <button id="logoutBtn" class="btn btn-secondary">Sign out</button>
-    </aside>
+  function formatDate(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  }
 
-    <main class="admin-main">
-      <section class="page active" data-page="dashboard">
-        <h1>Dashboard</h1>
-        <p id="dashDate" class="muted-text">Loading…</p>
+  function formatDuration(value) {
+    const mins = Number(value || 0);
+    if (!mins) return "0 mins";
+    if (mins < 60) return `${mins} mins`;
+    const hrs = Math.floor(mins / 60);
+    const rem = mins % 60;
+    return rem ? `${hrs}h ${rem}m` : `${hrs}h`;
+  }
 
-        <div class="admin-stat-grid">
-          <article class="panel">
-            <p class="panel-label">Active Sessions</p>
-            <h2 id="statSessions">—</h2>
-            <span>Workstations in use</span>
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  function setLoginState(isLoggedIn) {
+    loginScreen.classList.toggle("hidden", isLoggedIn);
+    appLayout.classList.toggle("hidden", !isLoggedIn);
+  }
+
+  function activatePage(pageName) {
+    navItems.forEach((item) => {
+      item.classList.toggle("active", item.dataset.page === pageName);
+    });
+
+    pages.forEach((page) => {
+      page.classList.toggle("active", page.dataset.page === pageName);
+    });
+  }
+
+  function safeArray(data, keys = []) {
+    if (Array.isArray(data)) return data;
+    for (const key of keys) {
+      if (Array.isArray(data?.[key])) return data[key];
+    }
+    return [];
+  }
+
+  function renderRows(tbody, rowsHtml, colspan) {
+    if (!tbody) return;
+    tbody.innerHTML = rowsHtml || `<tr><td colspan="${colspan}">No data found</td></tr>`;
+  }
+
+  function renderDashboardStats(dashboard, transactions, contacts) {
+    const activeSessions =
+      Number(dashboard?.activeSessions) ||
+      safeArray(dashboard, ["sessions", "active"]).length ||
+      0;
+
+    const revenueToday =
+      Number(dashboard?.todayRevenue) ||
+      Number(dashboard?.revenueToday) ||
+      safeArray(transactions, ["transactions"]).reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
+      );
+
+    const creditsSold =
+      Number(dashboard?.creditsSold) ||
+      Number(dashboard?.minutesSold) ||
+      safeArray(transactions, ["transactions"]).reduce(
+        (sum, item) => sum + Number(item.minutes || 0),
+        0
+      );
+
+    const contactCount =
+      Number(dashboard?.contactCount) ||
+      safeArray(contacts, ["contacts", "messages"]).length ||
+      0;
+
+    setText(statSessions, String(activeSessions));
+    setText(statRevenue, formatMoney(revenueToday));
+    setText(
+      statRevenueTx,
+      `${safeArray(transactions, ["transactions"]).length} transaction(s)`
+    );
+    setText(statCredits, `${creditsSold} mins`);
+    setText(statContacts, String(contactCount));
+    setText(
+      dashDate,
+      `Updated ${new Date().toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })}`
+    );
+  }
+
+  function renderRecentTransactions(transactions) {
+    const items = safeArray(transactions, ["transactions"]).slice(0, 10);
+
+    const html = items
+      .map((item) => {
+        return `
+          <tr>
+            <td>${item.phone || item.customerPhone || "—"}</td>
+            <td>${item.plan || item.planName || "—"}</td>
+            <td>${formatMoney(item.amount)}</td>
+            <td>${item.status || "—"}</td>
+            <td>${formatDate(item.createdAt || item.date || item.timestamp)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    renderRows(txBody, html, 5);
+  }
+
+  function renderAllTransactions(transactions) {
+    const items = safeArray(transactions, ["transactions"]);
+
+    const html = items
+      .map((item) => {
+        return `
+          <tr>
+            <td>${item.orderId || item.id || "—"}</td>
+            <td>${item.phone || item.customerPhone || "—"}</td>
+            <td>${item.plan || item.planName || "—"}</td>
+            <td>${formatMoney(item.amount)}</td>
+            <td>${item.status || "—"}</td>
+            <td>${formatDate(item.createdAt || item.date || item.timestamp)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    renderRows(allTxBody, html, 6);
+  }
+
+  function renderSessions(dashboard) {
+    const sessions = safeArray(dashboard, ["sessions", "activeSessionsList"]);
+
+    const html = sessions
+      .map((item) => {
+        return `
+          <tr>
+            <td>${item.sessionId || item.id || "—"}</td>
+            <td>${item.phone || item.customerPhone || "—"}</td>
+            <td>${item.workstation || item.workstationId || "—"}</td>
+            <td>${formatDuration(item.minutes || item.durationMinutes || item.duration)}</td>
+            <td>${item.status || "active"}</td>
+            <td>${formatDate(item.startedAt || item.createdAt)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    renderRows(sessBody, html, 6);
+  }
+
+  function renderContacts(contacts) {
+    const items = safeArray(contacts, ["contacts", "messages"]);
+
+    const html = items
+      .map((item) => {
+        return `
+          <tr>
+            <td>${item.name || "—"}</td>
+            <td>${item.email || "—"}</td>
+            <td>${item.phone || "—"}</td>
+            <td>${item.interest || "—"}</td>
+            <td>${item.message || "—"}</td>
+            <td>${formatDate(item.createdAt || item.date)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    renderRows(contactBody, html, 6);
+  }
+
+  function renderWorkstations(data) {
+    const items =
+      safeArray(data, ["workstations"]) ||
+      [];
+
+    if (!wsGrid) return;
+
+    if (!items.length) {
+      wsGrid.innerHTML = `<div class="panel"><p>No workstations found</p></div>`;
+      return;
+    }
+
+    wsGrid.innerHTML = items
+      .map((item) => {
+        const status = (item.status || "idle").toLowerCase();
+        return `
+          <article class="panel workstation-card">
+            <div class="workstation-head">
+              <h3>${item.workstationId || item.id || "WS"}</h3>
+              <span class="status-badge status-${status}">${status}</span>
+            </div>
+            <p><strong>Current user:</strong> ${item.phone || item.customerPhone || "—"}</p>
+            <p><strong>Minutes left:</strong> ${item.minutesLeft ?? item.balanceMinutes ?? "—"}</p>
+            <p><strong>Updated:</strong> ${formatDate(item.updatedAt || item.lastSeen)}</p>
           </article>
+        `;
+      })
+      .join("");
+  }
 
-          <article class="panel">
-            <p class="panel-label">Revenue Today</p>
-            <h2 id="statRevenue">—</h2>
-            <span id="statRevenueTx">Transactions</span>
-          </article>
+  async function loadAdminData() {
+    try {
+      const [dashboard, transactions, contacts, workstations] = await Promise.all([
+        API.getAdminDashboard(),
+        API.getAdminTransactions(),
+        API.getContacts(),
+        API.getWorkstations(),
+      ]);
 
-          <article class="panel">
-            <p class="panel-label">Credits Sold</p>
-            <h2 id="statCredits">—</h2>
-            <span>Minutes today</span>
-          </article>
+      renderDashboardStats(dashboard, transactions, contacts);
+      renderRecentTransactions(transactions);
+      renderAllTransactions(transactions);
+      renderSessions(dashboard);
+      renderContacts(contacts);
+      renderWorkstations(workstations);
+    } catch (error) {
+      setText(loginAlert, error.message || "Failed to load admin data");
+    }
+  }
 
-          <article class="panel">
-            <p class="panel-label">Contacts / Leads</p>
-            <h2 id="statContacts">—</h2>
-            <span>Unread messages</span>
-          </article>
-        </div>
+  async function handleLogin() {
+    const email = emailInput?.value?.trim();
+    const password = passwordInput?.value || "";
 
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Recent Transactions</h3>
-            <button id="refreshDash" class="btn btn-secondary">Refresh</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Phone</th>
-                  <th>Plan</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody id="txBody">
-                <tr>
-                  <td colspan="5">Loading…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    if (!email || !password) {
+      setText(loginAlert, "Enter email and password");
+      return;
+    }
 
-      <section class="page" data-page="workstations">
-        <h1>Workstations</h1>
-        <p class="muted-text">Live status of all kiosk machines</p>
-        <div id="wsGrid" class="workstation-grid"></div>
-      </section>
+    loginBtn.disabled = true;
+    setText(loginAlert, "Signing in...");
 
-      <section class="page" data-page="sessions">
-        <h1>Sessions</h1>
-        <div class="panel">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Session ID</th>
-                  <th>Phone</th>
-                  <th>Workstation</th>
-                  <th>Duration</th>
-                  <th>Status</th>
-                  <th>Started</th>
-                </tr>
-              </thead>
-              <tbody id="sessBody">
-                <tr>
-                  <td colspan="6">Loading…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    try {
+      const result = await API.login(email, password);
 
-      <section class="page" data-page="transactions">
-        <h1>Transactions</h1>
-        <div class="panel">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Phone</th>
-                  <th>Plan</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody id="allTxBody">
-                <tr>
-                  <td colspan="6">Loading…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+      adminToken =
+        result?.token ||
+        result?.accessToken ||
+        result?.data?.token ||
+        "";
 
-      <section class="page" data-page="contacts">
-        <h1>Contact Messages</h1>
-        <div class="panel">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Interest</th>
-                  <th>Message</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody id="contactBody">
-                <tr>
-                  <td colspan="6">Loading…</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+      currentAdmin =
+        result?.admin ||
+        result?.user ||
+        result?.data?.admin ||
+        null;
 
-  <script src="./api.js"></script>
-  <script src="./admin.js"></script>
-</body>
-</html>
+      if (!adminToken) {
+        throw new Error("Login succeeded but token was not returned");
+      }
+
+      API.setToken(adminToken);
+      setText(loginAlert, "");
+      setLoginState(true);
+      activatePage("dashboard");
+      await loadAdminData();
+    } catch (error) {
+      setText(loginAlert, error.message || "Login failed");
+      setLoginState(false);
+    } finally {
+      loginBtn.disabled = false;
+    }
+  }
+
+  function handleLogout() {
+    adminToken = "";
+    currentAdmin = null;
+    API.setToken("");
+    setLoginState(false);
+    setText(loginAlert, "");
+    if (emailInput) emailInput.value = "";
+    if (passwordInput) passwordInput.value = "";
+  }
+
+  loginBtn?.addEventListener("click", handleLogin);
+  logoutBtn?.addEventListener("click", handleLogout);
+  refreshDash?.addEventListener("click", loadAdminData);
+
+  passwordInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  });
+
+  navItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      activatePage(item.dataset.page);
+    });
+  });
+
+  setLoginState(false);
+})();
