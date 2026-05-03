@@ -1,213 +1,319 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>AI Station — Kiosk</title>
-  <meta
-    name="description"
-    content="Buy AI Station credits, start a session, and check your balance."
-  />
+(function () {
+  const API = window.AIStationAPI;
 
-  <link rel="stylesheet" href="./styles.css" />
+  const customerPhone = document.getElementById("customerPhone");
+  const customerName = document.getElementById("customerName");
+  const checkBalanceBtn = document.getElementById("checkBalanceBtn");
+  const balanceStatus = document.getElementById("balanceStatus");
+  const balanceMinutes = document.getElementById("balanceMinutes");
+  const balanceMeta = document.getElementById("balanceMeta");
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
-    rel="stylesheet"
-  />
+  const planCards = Array.from(document.querySelectorAll(".plan-card"));
+  const selectedPlanName = document.getElementById("selectedPlanName");
+  const selectedPlanMeta = document.getElementById("selectedPlanMeta");
+  const buyCreditsBtn = document.getElementById("buyCreditsBtn");
+  const paymentStatus = document.getElementById("paymentStatus");
 
-  <script>
-    window.AI_STATION_API_URL = "https://aistation-production.up.railway.app/api";
-  </script>
-</head>
-<body class="kiosk-body">
-  <header class="site-header">
-    <div class="container nav">
-      <a href="./index.html" class="brand">AI Station</a>
+  const workstationId = document.getElementById("workstationId");
+  const sessionMinutes = document.getElementById("sessionMinutes");
+  const startSessionBtn = document.getElementById("startSessionBtn");
+  const endSessionBtn = document.getElementById("endSessionBtn");
+  const sessionStatus = document.getElementById("sessionStatus");
+  const sessionLiveState = document.getElementById("sessionLiveState");
+  const sessionMeta = document.getElementById("sessionMeta");
 
-      <nav class="nav-links">
-        <a href="./index.html#pricing">Pricing</a>
-        <a href="./index.html#faq">FAQ</a>
-        <a href="./admin.html">Admin</a>
-      </nav>
+  const loadHistoryBtn = document.getElementById("loadHistoryBtn");
+  const historyBody = document.getElementById("historyBody");
 
-      <div class="nav-actions">
-        <a href="./index.html" class="btn btn-secondary">Home</a>
-      </div>
-    </div>
-  </header>
+  let activePlan = {
+    plan: "starter",
+    minutes: 100,
+    amount: 150,
+  };
 
-  <main class="kiosk-main">
-    <section class="kiosk-hero">
-      <div class="container">
-        <p class="eyebrow">Self-service kiosk</p>
-        <h1>Buy credits and start your AI session</h1>
-        <p class="hero-text">
-          Use your phone number to buy minutes, check balance, and start a workstation session.
-        </p>
-      </div>
-    </section>
+  let activeSessionId = "";
 
-    <section class="section">
-      <div class="container kiosk-grid">
-        <div class="panel kiosk-panel">
-          <div class="panel-head">
-            <h2>1. Identify yourself</h2>
-          </div>
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
 
-          <div class="field">
-            <label for="customerPhone">Phone number</label>
-            <input
-              id="customerPhone"
-              type="tel"
-              placeholder="Enter 10-digit phone number"
-              maxlength="10"
-            />
-          </div>
+  function normalizePhone(value) {
+    return String(value || "").replace(/\D/g, "").slice(0, 10);
+  }
 
-          <div class="field">
-            <label for="customerName">Name (optional)</label>
-            <input
-              id="customerName"
-              type="text"
-              placeholder="Your name"
-            />
-          </div>
+  function formatMoney(value) {
+    const amount = Number(value || 0);
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
 
-          <button id="checkBalanceBtn" class="btn btn-secondary">
-            Check Balance
-          </button>
+  function formatDate(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    return d.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  }
 
-          <p id="balanceStatus" class="form-status"></p>
+  function safeArray(data, keys = []) {
+    if (Array.isArray(data)) return data;
+    for (const key of keys) {
+      if (Array.isArray(data?.[key])) return data[key];
+    }
+    return [];
+  }
 
-          <div class="balance-box">
-            <p class="panel-label">Available credits</p>
-            <h3 id="balanceMinutes">0 mins</h3>
-            <span id="balanceMeta">No account checked yet</span>
-          </div>
-        </div>
+  function getPhone() {
+    return normalizePhone(customerPhone?.value);
+  }
 
-        <div class="panel kiosk-panel">
-          <div class="panel-head">
-            <h2>2. Choose a plan</h2>
-          </div>
+  function validatePhone() {
+    const phone = getPhone();
+    if (phone.length !== 10) {
+      throw new Error("Enter a valid 10-digit phone number");
+    }
+    return phone;
+  }
 
-          <div class="plan-grid">
-            <button class="plan-card active" data-plan="starter" data-minutes="100" data-amount="150">
-              <span class="plan-name">Starter</span>
-              <strong>₹150</strong>
-              <small>100 mins</small>
-            </button>
+  function updatePlanUI() {
+    setText(
+      selectedPlanName,
+      activePlan.plan === "pro" ? "Pro Pass" :
+      activePlan.plan === "explorer" ? "Explorer" :
+      "Starter"
+    );
+    setText(
+      selectedPlanMeta,
+      `${activePlan.minutes} mins • ${formatMoney(activePlan.amount)}`
+    );
+  }
 
-            <button class="plan-card" data-plan="explorer" data-minutes="360" data-amount="500">
-              <span class="plan-name">Explorer</span>
-              <strong>₹500</strong>
-              <small>360 mins</small>
-            </button>
+  function setSelectedPlan(card) {
+    planCards.forEach((item) => item.classList.remove("active"));
+    card.classList.add("active");
 
-            <button class="plan-card" data-plan="pro" data-minutes="1200" data-amount="1500">
-              <span class="plan-name">Pro Pass</span>
-              <strong>₹1,500</strong>
-              <small>1200 mins</small>
-            </button>
-          </div>
+    activePlan = {
+      plan: card.dataset.plan || "starter",
+      minutes: Number(card.dataset.minutes || 0),
+      amount: Number(card.dataset.amount || 0),
+    };
 
-          <div class="selected-plan-box">
-            <p class="panel-label">Selected plan</p>
-            <h3 id="selectedPlanName">Starter</h3>
-            <span id="selectedPlanMeta">100 mins • ₹150</span>
-          </div>
+    updatePlanUI();
+  }
 
-          <button id="buyCreditsBtn" class="btn btn-primary">
-            Buy Credits
-          </button>
+  async function checkBalance() {
+    try {
+      const phone = validatePhone();
+      checkBalanceBtn.disabled = true;
+      setText(balanceStatus, "Checking balance...");
 
-          <p id="paymentStatus" class="form-status"></p>
-        </div>
+      const result = await API.getBalance(phone);
 
-        <div class="panel kiosk-panel">
-          <div class="panel-head">
-            <h2>3. Start a session</h2>
-          </div>
+      const minutes =
+        Number(result?.balanceMinutes) ||
+        Number(result?.minutes) ||
+        Number(result?.credits) ||
+        0;
 
-          <div class="field">
-            <label for="workstationId">Workstation</label>
-            <select id="workstationId">
-              <option value="WS-01">WS-01</option>
-              <option value="WS-02">WS-02</option>
-              <option value="WS-03">WS-03</option>
-              <option value="WS-04">WS-04</option>
-              <option value="WS-05">WS-05</option>
-            </select>
-          </div>
+      setText(balanceMinutes, `${minutes} mins`);
+      setText(
+        balanceMeta,
+        result?.message || `Balance loaded for ${phone}`
+      );
+      setText(balanceStatus, "Balance loaded");
+    } catch (error) {
+      setText(balanceStatus, error.message || "Failed to check balance");
+      setText(balanceMinutes, "0 mins");
+      setText(balanceMeta, "Unable to fetch balance");
+    } finally {
+      checkBalanceBtn.disabled = false;
+    }
+  }
 
-          <div class="field">
-            <label for="sessionMinutes">Minutes to use</label>
-            <input
-              id="sessionMinutes"
-              type="number"
-              min="10"
-              step="10"
-              value="30"
-            />
-          </div>
+  async function buyCredits() {
+    try {
+      const phone = validatePhone();
+      const name = customerName?.value?.trim() || "";
 
-          <button id="startSessionBtn" class="btn btn-primary">
-            Start Session
-          </button>
+      buyCreditsBtn.disabled = true;
+      setText(paymentStatus, "Creating payment...");
 
-          <button id="endSessionBtn" class="btn btn-secondary">
-            End Session
-          </button>
+      const paymentPayload = {
+        phone,
+        name,
+        plan: activePlan.plan,
+        minutes: activePlan.minutes,
+        amount: activePlan.amount,
+      };
 
-          <p id="sessionStatus" class="form-status"></p>
+      const createResult = await API.createPayment(paymentPayload);
 
-          <div class="session-box">
-            <p class="panel-label">Current session</p>
-            <h3 id="sessionLiveState">No active session</h3>
-            <span id="sessionMeta">Choose a workstation and start</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      if (
+        createResult?.status === "success" ||
+        createResult?.success === true ||
+        createResult?.paymentId ||
+        createResult?.orderId
+      ) {
+        setText(
+          paymentStatus,
+          `Payment created for ${formatMoney(activePlan.amount)}. Credits will reflect after verification.`
+        );
+      } else {
+        setText(
+          paymentStatus,
+          createResult?.message || "Payment request created"
+        );
+      }
 
-    <section class="section alt-section">
-      <div class="container">
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Session history</h2>
-            <button id="loadHistoryBtn" class="btn btn-secondary">Load History</button>
-          </div>
+      await checkBalance();
+    } catch (error) {
+      setText(paymentStatus, error.message || "Failed to create payment");
+    } finally {
+      buyCreditsBtn.disabled = false;
+    }
+  }
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Session ID</th>
-                  <th>Workstation</th>
-                  <th>Minutes</th>
-                  <th>Status</th>
-                  <th>Started</th>
-                </tr>
-              </thead>
-              <tbody id="historyBody">
-                <tr>
-                  <td colspan="5">No history loaded</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+  async function startSession() {
+    try {
+      const phone = validatePhone();
+      const ws = workstationId?.value;
+      const mins = Number(sessionMinutes?.value || 0);
 
-  <script src="./api.js"></script>
-  <script src="./kiosk.js"></script>
-</body>
-</html>
+      if (!ws) {
+        throw new Error("Choose a workstation");
+      }
+
+      if (!mins || mins < 10) {
+        throw new Error("Enter at least 10 minutes");
+      }
+
+      startSessionBtn.disabled = true;
+      setText(sessionStatus, "Starting session...");
+
+      const payload = {
+        phone,
+        workstationId: ws,
+        minutes: mins,
+      };
+
+      const result = await API.startSession(payload);
+
+      activeSessionId =
+        result?.sessionId ||
+        result?.id ||
+        result?.data?.sessionId ||
+        "";
+
+      setText(sessionLiveState, "Session active");
+      setText(
+        sessionMeta,
+        `${ws} • ${mins} mins • ${phone}`
+      );
+      setText(
+        sessionStatus,
+        result?.message || "Session started successfully"
+      );
+
+      await checkBalance();
+      await loadHistory();
+    } catch (error) {
+      setText(sessionStatus, error.message || "Failed to start session");
+    } finally {
+      startSessionBtn.disabled = false;
+    }
+  }
+
+  async function endSession() {
+    try {
+      const phone = validatePhone();
+
+      endSessionBtn.disabled = true;
+      setText(sessionStatus, "Ending session...");
+
+      const payload = activeSessionId
+        ? { sessionId: activeSessionId, phone }
+        : {
+            phone,
+            workstationId: workstationId?.value || "",
+          };
+
+      const result = await API.endSession(payload);
+
+      setText(sessionLiveState, "No active session");
+      setText(sessionMeta, "Choose a workstation and start");
+      setText(
+        sessionStatus,
+        result?.message || "Session ended successfully"
+      );
+
+      activeSessionId = "";
+
+      await checkBalance();
+      await loadHistory();
+    } catch (error) {
+      setText(sessionStatus, error.message || "Failed to end session");
+    } finally {
+      endSessionBtn.disabled = false;
+    }
+  }
+
+  async function loadHistory() {
+    try {
+      const phone = validatePhone();
+      loadHistoryBtn.disabled = true;
+
+      const result = await API.getSessions(phone);
+      const items = safeArray(result, ["sessions", "data"]);
+
+      if (!items.length) {
+        historyBody.innerHTML = `<tr><td colspan="5">No sessions found</td></tr>`;
+        return;
+      }
+
+      historyBody.innerHTML = items
+        .map((item) => {
+          const minutes =
+            item.minutes ||
+            item.durationMinutes ||
+            item.duration ||
+            0;
+
+          return `
+            <tr>
+              <td>${item.sessionId || item.id || "—"}</td>
+              <td>${item.workstationId || item.workstation || "—"}</td>
+              <td>${minutes}</td>
+              <td>${item.status || "—"}</td>
+              <td>${formatDate(item.startedAt || item.createdAt)}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    } catch (error) {
+      historyBody.innerHTML = `<tr><td colspan="5">${error.message || "Failed to load history"}</td></tr>`;
+    } finally {
+      loadHistoryBtn.disabled = false;
+    }
+  }
+
+  planCards.forEach((card) => {
+    card.addEventListener("click", () => setSelectedPlan(card));
+  });
+
+  checkBalanceBtn?.addEventListener("click", checkBalance);
+  buyCreditsBtn?.addEventListener("click", buyCredits);
+  startSessionBtn?.addEventListener("click", startSession);
+  endSessionBtn?.addEventListener("click", endSession);
+  loadHistoryBtn?.addEventListener("click", loadHistory);
+
+  customerPhone?.addEventListener("input", () => {
+    customerPhone.value = normalizePhone(customerPhone.value);
+  });
+
+  updatePlanUI();
+})();
